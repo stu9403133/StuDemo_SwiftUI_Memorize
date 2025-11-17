@@ -15,9 +15,11 @@ struct ContentView: View {
     var body: some View {
         
         VStack {
-            ForEach(0..<cardLimit, id: \.self) { index in
-                CardView(content: cardContents[index])
-            }
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {
+                ForEach(cardContents.indices, id: \.self) { index in
+                    CardView(content: cardContents[index]).aspectRatio(2/3, contentMode: .fit)
+                }
+            }.foregroundColor(.orange)
             
             HStack {
                 Button("More Card") {
