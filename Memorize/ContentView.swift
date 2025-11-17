@@ -15,12 +15,7 @@ struct ContentView: View {
     var body: some View {
         
         VStack {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {
-                ForEach(cardContents.indices, id: \.self) { index in
-                    CardView(content: cardContents[index]).aspectRatio(2/3, contentMode: .fit)
-                }
-            }.foregroundColor(.orange)
-            
+            cards
             HStack {
                 Button("More Card") {
                     if cardLimit < cardContents.count {
@@ -41,6 +36,16 @@ struct ContentView: View {
         }
         .padding()
     }
+    
+    var cards: some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {
+            ForEach(cardContents.indices, id: \.self) { index in
+                CardView(content: cardContents[index]).aspectRatio(2/3, contentMode: .fit)
+            }
+        }.foregroundColor(.orange)
+    }
+    
+    
 }
 
 
