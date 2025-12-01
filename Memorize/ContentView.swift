@@ -8,65 +8,81 @@
 import SwiftUI
 
 struct ContentView: View {
-    let cardContents: [String] = ["👻", "🎃", "🕷", "🦇","😈","👹","☠️","👾","👺","👁️"]
+    let emojis: [String] = ["👻", "🎃", "🕷", "🦇","😈","👹","☠️","👾","👺","👁️"]
     
-    @State var cardLimit: Int = 4
+    @State var cardCount: Int = 4
     
     var body: some View {
         
+        
         VStack {
-            cards
-            HStack {
-                Button("More Card") {
-                    if cardLimit < cardContents.count {
-                        cardLimit += 1
-                    }
-                    
-                }
-                
-                Spacer()
-                
-                Button("Less Card") {
-                    if cardLimit > 1 {
-                        cardLimit -= 1
-                    }
-                }.foregroundColor(.red)
+            ScrollView {
+                cards
             }
-            
+            Spacer()
+            cardsAdjusters
         }
         .padding()
     }
     
+    
+    
+    func cardCountAdjuster(by offset: Int, symbol: String) -> some View {
+        Button (action: {
+            cardCount += offset
+        }, label: {
+            Image(systemName: symbol)
+        })
+        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
+        
+    }
+    
     var cards: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 85))]) {
-            ForEach(cardContents.indices, id: \.self) { index in
-                CardView(content: cardContents[index]).aspectRatio(2/3, contentMode: .fit)
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]) {
+            ForEach(0..<cardCount, id: \.self) { index in
+                CardView(content: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
             }
-        }.foregroundColor(.orange)
+        }
+    }
+    
+    var cardsAdjusters: some View {
+        HStack {
+            cardRemover
+            Spacer()
+            cardAdder
+        }
     }
     
     
-}
-
-
-struct CardView: View {
-    @State var isFaceUp: Bool = true
-    @State var content: String = "👻"
     
-    var body: some View {
-        ZStack {
-            if isFaceUp {
-                Rectangle().foregroundColor(.orange)
-                Rectangle().stroke(lineWidth: 10)
-                Text(content).font(.largeTitle)
-            } else {
-                Rectangle().foregroundColor(.white)
-                Rectangle().stroke(lineWidth: 10)
+    var cardRemover: some View {
+        cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
+    }
+    
+    var cardAdder: some View {
+        cardCountAdjuster(by: 1, symbol: "rectangle.stack.badge.plus.fill")
+    }
+    
+    
+    struct CardView: View {
+        @State var isFaceUp: Bool = true
+        @State var content: String = "👻"
+        
+        var body: some View {
+            ZStack {
+                let base = RoundedRectangle(cornerRadius: 12)
+                Group {
+                    base.fill(.white)
+                    base.strokeBorder(lineWidth: 2)
+                    Text(content).font(.largeTitle)
+                }
+                .opacity(isFaceUp ? 1 : 0)
+                base.fill().opacity(isFaceUp ? 0 : 1)
             }
-            
-        }
-        .onTapGesture {
-            isFaceUp.toggle()
+            .onTapGesture {
+                isFaceUp.toggle()
+            }
         }
     }
 }
