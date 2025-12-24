@@ -11,10 +11,11 @@ import SwiftUI
 
 // 這是viewModel用來溝通 view, model
 class EmojiMemoryGame: ObservableObject {
+    // 10組
     private static let emojis = ["👻", "🎃", "🕷", "🦇","😈","👹","☠️","👾","👺","👁️"]
     
     private static func createMemoryGame() -> MemoryGame<String> {
-        return MemoryGame(numberOfPairsOfCards: 16) { pairIndex in
+        return MemoryGame(numberOfPairsOfCards: 10) { pairIndex in
             if emojis.indices.contains(pairIndex) {
                 return emojis[pairIndex]
             } else {
