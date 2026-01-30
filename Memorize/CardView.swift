@@ -25,7 +25,10 @@ struct CardView: View {
                     .font(.system(size: Constants.FontSize.largest))
                     .minimumScaleFactor(Constants.FontSize.smallest / Constants.FontSize.largest)
                     .aspectRatio(1, contentMode: .fit)
+                    .rotationEffect(.degrees(card.isMatch ? 360 : 0))
+                    .animation(.spin(duration: 1), value: card.isMatch)
             )
+            
             .padding(Constants.inset)
             .modifier(Cardify(isFaceUp: card.isFaceUp))
         	.opacity(card.isFaceUp || !card.isMatch ? 1 : 0)
@@ -48,6 +51,11 @@ struct CardView: View {
     
 }
 
+extension Animation {
+    static func spin(duration: TimeInterval) -> Animation {
+        .linear(duration: 1).repeatForever(autoreverses: false)
+    }
+}
 
 
 struct CardView_Previews: PreviewProvider {
